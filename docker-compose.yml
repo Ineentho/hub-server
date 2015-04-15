@@ -1,0 +1,9 @@
+main: 
+  build: .
+  ports:
+    - "5000:5000"
+  environment:
+    - GOOGLE_CONSUMER_KEY
+    - GOOGLE_CONSUMER_SECRET
+  volumes: 
+    - ./server:/usr/src/app/server
