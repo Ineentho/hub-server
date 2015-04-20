@@ -7,6 +7,6 @@ RUN pip install -r requirements.txt
 
 COPY ./server ./server
 
-CMD ["python", "-u", "runserver.py"]
+CMD ["python", "runserver.py"]
 
 EXPOSE 5000
