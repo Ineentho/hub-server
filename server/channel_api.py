@@ -1,7 +1,7 @@
 import re
 from flask import request, jsonify
 from server import app
-from server.channel import create_channel
+from server.channel import create_channel, ChannelExistsError
 from server.util import invalid_parameter
 
 
@@ -12,7 +12,7 @@ def register_channel():
 
     HTTP POST /channel/register {
         name: Channel display name, max length 80 characters
-        slug: Channel slug (url-friendly name), [a-z-], max 80 characters
+        slug: Channel slug (url-friendly name), [a-z0-9-], max 80 characters
         url: Remote server url where the channel is hosted, max 256 characters
         password: The password required for modifying the channel in the future
     }
@@ -33,8 +33,8 @@ def register_channel():
     if 'slug' not in params:
         return invalid_parameter('slug', 'A slug is required')
 
-    if not re.match('^[a-z-]*$', params['slug']):
-        return invalid_parameter('slug', 'The slug may only contain [a-z-]')
+    if not re.match('^[a-z0-9-]*$', params['slug']):
+        return invalid_parameter('slug', 'The slug may only contain [a-z0-9-]')
 
     if len(params['slug']) > 80:
         return invalid_parameter('slug', 'The slug may not be longer than 80 characters')
@@ -53,8 +53,8 @@ def register_channel():
 
     try:
         create_channel(params['name'], params['slug'], params['url'], params['password'])
-    except BlockingIOError:
-        pass
+    except ChannelExistsError:
+        return invalid_parameter('slug', 'The slug is already in use')
 
     return jsonify({
         'message': 'Channel created'

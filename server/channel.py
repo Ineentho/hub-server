@@ -1,11 +1,20 @@
+from sqlalchemy.exc import IntegrityError
 from server import db
 from server.util import hash_password
+
+
+class ChannelExistsError(Exception):
+    pass
 
 
 def create_channel(name, slug, url, password):
     channel = Channel(name, slug, url, password)
     db.session.add(channel)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        raise ChannelExistsError(e)
     pass
 
 def post_video(channel, name, slug):
