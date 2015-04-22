@@ -2,6 +2,7 @@ from flask import jsonify
 import random
 import scrypt
 
+
 def invalid_parameter(param, message):
     return jsonify({
         'error': 'Invalid parameter',
@@ -9,11 +10,21 @@ def invalid_parameter(param, message):
         'details': message
     }), 400
 
+
+def invalid_request(message):
+    return jsonify({
+        'error': 'Invalid request',
+        'details': message
+    }), 400
+
+
 def randstr(length):
-    return ''.join(chr(random.randint(0,255)) for i in range(length))
+    return ''.join(chr(random.randint(0, 255)) for i in range(length))
+
 
 def hash_password(password):
     return scrypt.encrypt(randstr(64), password, maxtime=1)
+
 
 def verify_password(hashed_password, guessed_password):
     try:
