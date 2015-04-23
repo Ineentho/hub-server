@@ -10,4 +10,4 @@ test:
   override:
     - docker-compose run main ./runtests
   post:
-    - mv coverage.xml $CIRCLE_ARTIFACTS
+    - mv .coverage $CIRCLE_ARTIFACTS
