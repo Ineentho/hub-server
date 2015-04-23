@@ -1,4 +1,3 @@
 #!/bin/sh
-coverage run -m unittest discover tests
+nosetests --with-coverage --cover-package server
 coverage xml
-coverage html
