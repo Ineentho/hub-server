@@ -1,2 +1,2 @@
 #!/bin/sh
-nosetests --with-coverage --cover-package server --cover-branches
+nosetests --with-coverage --cover-package server --cover-branches --with-xunit
