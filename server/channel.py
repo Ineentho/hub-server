@@ -60,7 +60,7 @@ class Channel(db.Model):
     name = db.Column(db.String(80))
     slug = db.Column(db.String(80), unique=True)
     url = db.Column(db.String(256))
-    password = db.Column(db.Binary(256), unique=True)
+    password = db.Column(db.LargeBinary(256), unique=True)
     videos = db.relationship('Video')
 
     def __init__(self, name, slug, url, password):

@@ -2,10 +2,10 @@ FROM python:3
 
 RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app
-COPY requirements.txt runserver.py /usr/src/app/
+COPY requirements.txt /usr/src/app/
 RUN pip install -r requirements.txt
 
-COPY ./server ./server
+COPY ./ ./
 
 CMD ["python", "runserver.py"]
 

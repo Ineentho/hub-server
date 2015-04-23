@@ -7,5 +7,4 @@ main:
     - GOOGLE_CONSUMER_KEY
     - GOOGLE_CONSUMER_SECRET
   volumes:
-    - ./server:/usr/src/app/server
-    - ./data/:/var/lib/data
+    - ./:/usr/src/app/

@@ -2,3 +2,4 @@ flask
 authomatic
 Flask-SQLAlchemy
 scrypt
+coverage
