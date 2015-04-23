@@ -1,10 +1,10 @@
-machine:
-  services:
-    - docker
+#machine:
+#  services:
+#    - docker
 
-dependencies:
-  override:
-    - pip install docker-compose
+#dependencies:
+#  override:
+#    - pip install docker-compose
 
 #test:
 #  override:
