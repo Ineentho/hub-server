@@ -96,11 +96,11 @@ class ChannelRegisterTestCase(unittest.TestCase):
         self.assertIn(b'password is required', rv.data)
         self.assertEqual(rv.status_code, 400)
 
+"""
     def test_valid_parameters(self):
-        """
+        ""
         Test if a channel is created when supplied valid parameters
-        """
-        return 
+        ""
         rv = self.post_json('/channel/register', {
             'name': 'test-channel',
             'slug': 'test-channel',
@@ -108,4 +108,4 @@ class ChannelRegisterTestCase(unittest.TestCase):
             'password': 'test123'
         })
         self.assertIn(b'Channel created', rv.data)
-        self.assertEqual(rv.status_code, 200)
+        self.assertEqual(rv.status_code, 200)"""

@@ -1,13 +1,13 @@
-#machine:
-#  services:
-#    - docker
+machine:
+  services:
+    - docker
 
-#dependencies:
-#  override:
-#    - pip install docker-compose
+dependencies:
+  override:
+    - pip install docker-compose
 
-#test:
-#  override:
-#    - docker-compose run main ./runtests
-#  post:
-#    - mv coverage.xml .coverage $CIRCLE_TEST_REPORTS
+test:
+  override:
+    - docker-compose run main ./runtests
+  post:
+    - mv coverage.xml .coverage nosetests.xml $CIRCLE_TEST_REPORTS
