@@ -4,11 +4,11 @@ machine:
 
 dependencies:
   override:
-    - pip install docker-compose coveralls
+    - pip install docker-compose
 
 test:
   override:
     - docker-compose run main ./runtests
   post:
     - cp nosetests.xml $CIRCLE_TEST_REPORTS
-    - coveralls
+    - sudo docker-compose run main bash -c "COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls"

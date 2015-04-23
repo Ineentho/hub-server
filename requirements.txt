@@ -3,4 +3,5 @@ authomatic
 Flask-SQLAlchemy
 scrypt
 coverage
+coveralls
 nose
