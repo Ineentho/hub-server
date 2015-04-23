@@ -4,10 +4,11 @@ machine:
 
 dependencies:
   override:
-    - pip install docker-compose
+    - pip install docker-compose coveralls
 
 test:
   override:
     - docker-compose run main ./runtests
   post:
-    - mv coverage.xml .coverage nosetests.xml cover $CIRCLE_TEST_REPORTS
+    - cp nosetests.xml $CIRCLE_TEST_REPORTS
+    - coveralls
