@@ -3,7 +3,7 @@ import server
 import unittest
 
 
-class ChannelRegisterTestCase(unittest.TestCase):
+class ChannelRegistrationTestCase(unittest.TestCase):
     def setUp(self):
         server.app.config['TESTING'] = True
         server.load()
@@ -15,7 +15,8 @@ class ChannelRegisterTestCase(unittest.TestCase):
                              headers={'content-type': 'application/json'})
 
     def tearDown(self):
-        pass
+        # Not that it should matter, but leaves the db in a clean state
+        server.recreate_db()
 
     def test_register_no_data(self):
         """
@@ -100,6 +101,12 @@ class ChannelRegisterTestCase(unittest.TestCase):
         """
         Test if a channel is created when supplied valid parameters
         """
+
+        # 0 Channels before
+        rv = self.app.get('/api/channels/')
+        self.assertEqual(json.loads(rv.data)['total-channels'], 0)
+
+        # Add channel
         rv = self.post_json('/channel/register', {
             'name': 'test-channel',
             'slug': 'test-channel',
@@ -108,3 +115,24 @@ class ChannelRegisterTestCase(unittest.TestCase):
         })
         self.assertIn(b'Channel created', rv.data)
         self.assertEqual(rv.status_code, 200)
+
+        # Should be 1 channel now
+        rv = self.app.get('/api/channels/')
+        self.assertEqual(json.loads(rv.data)['total-channels'], 1)
+
+    def test_no_duplicate_slug(self):
+        """
+        Make sure there cannot be any duplicate slugs
+        """
+
+        rv = None
+        for i in range(2):
+            rv = self.post_json('/channel/register', {
+                'name': 'test-channel',
+                'slug': 'test-channel',
+                'url': 'http://test-channel-servrer.opid.io/test-channel',
+                'password': 'test123'
+            })
+
+        self.assertIn(b'slug is already in use', rv.data)
+        self.assertEqual(rv.status_code, 400)

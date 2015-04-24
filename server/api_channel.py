@@ -1,10 +1,14 @@
+"""
+This file contains all API requests that are meant for channel
+owners, such as registering channels and adding videos to them
+"""
+
 import re
 from flask import request, jsonify
 from server import app
 from server.channel import create_channel, ChannelExistsError, authenticate_channel, post_video, ChannelNotFoundError, \
     IncorrectPasswordError, SlugExistsError
 from server.util import invalid_parameter, invalid_request
-
 
 @app.route('/channel/newvideo', methods=['POST'])
 def add_new_video():

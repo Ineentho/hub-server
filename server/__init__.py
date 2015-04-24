@@ -16,8 +16,8 @@ def load():
 
     # Register all APIs
     import server.auth
-    import server.public_api
-    import server.channel_api
+    import server.api_public
+    import server.api_channel
 
     db.create_all()
 
