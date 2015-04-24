@@ -1,4 +1,4 @@
-# Opidio hub server
+# Opidio Hub Server
 [![Build Status](https://img.shields.io/circleci/project/opidio/hub-server.svg?style=flat-square)](https://circleci.com/gh/opidio/hub-server)
 [![Code Coverage](https://img.shields.io/coveralls/opidio/hub-server.svg?style=flat-square)](https://coveralls.io/r/opidio/hub-server)
 
@@ -8,11 +8,9 @@ The Opidio Projects:
 [![Channel Server](https://img.shields.io/badge/opidio-channel--server-lightgray.svg?style=flat-square)](https://github.com/opidio/channel-server)
 [![Android Client](https://img.shields.io/badge/opidio-android--client-lightgray.svg?style=flat-square)](https://github.com/opidio/android-client)
 
-The hub serveraggregates multiple channel servers and provides an API for clients
+The hub server aggregates multiple channel servers and provides an API for clients
 (such as the Android client) to list all channels from one place. The hub server
 is also the one responsible for handling user data.
-
-Opidio hub server 
 
 ## A note on docker
 
@@ -26,8 +24,8 @@ to start the server or tests.
 
 ### Starting the server
 
-    sudo docker-compose up
+    docker-compose up
 
 ### Running the tests
 
-    sudo docker-compose run main ./runtests
+    docker-compose run main ./runtests
