@@ -5,9 +5,9 @@ import unittest
 
 class ChannelRegisterTestCase(unittest.TestCase):
     def setUp(self):
-        server.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
         server.app.config['TESTING'] = True
         server.load()
+        server.recreate_db()
         self.app = server.app.test_client()
 
     def post_json(self, url, data):

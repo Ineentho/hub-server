@@ -1,4 +1,6 @@
-main: 
+db:
+  image: postgres:9.4
+main:
   build: .
   ports:
     - "5000:5000"
@@ -7,3 +9,5 @@ main:
     - GOOGLE_CONSUMER_SECRET
   volumes:
     - ./:/usr/src/app/
+  links:
+    - db

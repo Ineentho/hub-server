@@ -5,3 +5,4 @@ scrypt
 coverage
 coveralls
 nose
+psycopg2
