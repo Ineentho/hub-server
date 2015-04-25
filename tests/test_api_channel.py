@@ -118,3 +118,49 @@ class ChannelRegistrationTestCase(BaseTestCase):
         rv = self.create_channel()
         self.assertIn(b'slug is already in use', rv.data)
         self.assertEqual(rv.status_code, 400)
+
+
+class VideoAddTestCase(BaseTestCase):
+    def test_account_not_exist(self):
+        """
+        Video upload should be denied if entering the wrong username
+        """
+        result = self.post_json('/channel/newvideo', {
+            'channel-slug': 'nonexisting',
+            'channel-password': 'smth',
+            'video-slug': 'smth',
+            'video-name': 'smth'
+        })
+
+        self.assertIn(b'Channel with the provided slug was not found', result.data)
+        self.assert400(result)
+
+    def test_account_invalid_pass(self):
+        """
+        Login should be denied if using the wrong password
+        """
+        self.create_channel('test-channel', 'test123')
+
+        result = self.post_json('/channel/newvideo', {
+            'channel-slug': 'test-channel',
+            'channel-password': '123test',
+            'video-slug': 'smth',
+            'video-name': 'smth'
+        })
+        self.assertIn(b'password is invalid', result.data)
+        self.assert400(result)
+
+    def test_video_accepted(self):
+        """
+        Test if a video is saved when given the correct
+        login details
+        """
+        self.create_channel('test-channel', 'test123')
+
+        result = self.create_video('test-channel', 'test123', 'my-video', 'My Video')
+        self.assert200(result)
+        self.assertIn(b'Video added', result.data)
+
+        result = self.client.get('/api/videos/')
+        self.assertEqual(result.json['total-videos'], 1)
+        self.assertEqual(result.json['videos'][0]['channel-name'], 'test-channel')

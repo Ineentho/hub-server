@@ -62,7 +62,7 @@ class Channel(db.Model):
     slug = db.Column(db.String(80), unique=True)
     url = db.Column(db.String(256))
     password = db.Column(db.LargeBinary(256), unique=True)
-    videos = db.relationship('Video')
+    videos = db.relationship('Video', backref='channel')
 
     def __init__(self, name, slug, url, password):
         self.name = name
