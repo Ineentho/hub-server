@@ -1,29 +1,23 @@
 from flask import json
-import server
-import unittest
+from base_test import BaseTestCase
 
 
-class ChannelRegistrationTestCase(unittest.TestCase):
-    def setUp(self):
-        server.app.config['TESTING'] = True
-        server.load()
-        server.recreate_db()
-        self.app = server.app.test_client()
+class ChannelRegistrationTestCase(BaseTestCase):
 
-    def post_json(self, url, data):
-        return self.app.post(url, data=json.dumps(data),
-                             headers={'content-type': 'application/json'})
-
-    def tearDown(self):
-        # Not that it should matter, but leaves the db in a clean state
-        server.recreate_db()
+    def create_channel(self):
+        return self.post_json('/channel/register', {
+            'name': 'test-channel',
+            'slug': 'test-channel',
+            'url': 'http://test-channel-servrer.opid.io/test-channel',
+            'password': 'test123'
+        })
 
     def test_register_no_data(self):
         """
         Test whether the request is denied when supplied no json body
         """
 
-        rv = self.app.post('/channel/register')
+        rv = self.client.post('/channel/register')
         self.assertEqual(rv.status_code, 400)
         self.assertIn(b'not valid JSON', rv.data)
 
@@ -103,7 +97,7 @@ class ChannelRegistrationTestCase(unittest.TestCase):
         """
 
         # 0 Channels before
-        rv = self.app.get('/api/channels/')
+        rv = self.client.get('/api/channels/')
         self.assertEqual(json.loads(rv.data)['total-channels'], 0)
 
         # Add channel
@@ -117,7 +111,7 @@ class ChannelRegistrationTestCase(unittest.TestCase):
         self.assertEqual(rv.status_code, 200)
 
         # Should be 1 channel now
-        rv = self.app.get('/api/channels/')
+        rv = self.client.get('/api/channels/')
         self.assertEqual(json.loads(rv.data)['total-channels'], 1)
 
     def test_no_duplicate_slug(self):
@@ -125,14 +119,11 @@ class ChannelRegistrationTestCase(unittest.TestCase):
         Make sure there cannot be any duplicate slugs
         """
 
-        rv = None
-        for i in range(2):
-            rv = self.post_json('/channel/register', {
-                'name': 'test-channel',
-                'slug': 'test-channel',
-                'url': 'http://test-channel-servrer.opid.io/test-channel',
-                'password': 'test123'
-            })
+        # First should succeed
+        rv = self.create_channel()
+        self.assertEqual(rv.status_code, 200)
 
+        # And next with same params should be taken
+        rv = self.create_channel()
         self.assertIn(b'slug is already in use', rv.data)
         self.assertEqual(rv.status_code, 400)

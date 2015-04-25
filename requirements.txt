@@ -6,3 +6,4 @@ coverage
 coveralls
 nose
 psycopg2
+Flask-Testing

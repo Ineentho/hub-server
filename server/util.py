@@ -1,6 +1,7 @@
 from flask import jsonify
 import random
 import scrypt
+import server
 
 
 def invalid_parameter(param, message):
@@ -23,7 +24,10 @@ def randstr(length):
 
 
 def hash_password(password):
-    return scrypt.encrypt(randstr(64), password, maxtime=1)
+    # Speed up the password hashing if in testing mode
+    maxtime = 0.01 if server.app.config['TESTING'] else 1
+
+    return scrypt.encrypt(randstr(64), password, maxtime=maxtime)
 
 
 def verify_password(hashed_password, guessed_password):

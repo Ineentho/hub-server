@@ -5,7 +5,7 @@ videos
 """
 
 from flask import jsonify
-from server import app
+from server import app, db
 from server.channel import Video, Channel
 
 
