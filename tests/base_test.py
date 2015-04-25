@@ -19,6 +19,17 @@ class BaseTestCase(TestCase):
         get_db().session.remove()
         get_db().drop_all()
 
+    # Utils used across all tests
+
+    def create_channel(self, slug='test-channel'):
+        return self.post_json('/channel/register', {
+            'name': 'test-channel',
+            'slug': slug,
+            'url': 'http://test-channel-servrer.opid.io/test-channel',
+            'password': 'test123'
+        })
+
+
     def post_json(self, url, data):
         return self.client.post(url, data=json.dumps(data),
                              headers={'content-type': 'application/json'})

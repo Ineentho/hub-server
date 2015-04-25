@@ -39,6 +39,7 @@ def create_channel(name, slug, url, password):
     try:
         db.session.commit()
     except IntegrityError as e:
+        db.session.rollback()
         raise ChannelExistsError(e)
     pass
 

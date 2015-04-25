@@ -36,7 +36,6 @@ def load_db():
     import server.auth
     import server.api_public
     import server.api_channel
-    print('apps imported')
 
     db.create_all()
     db.session.commit()

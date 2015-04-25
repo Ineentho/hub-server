@@ -3,15 +3,6 @@ from base_test import BaseTestCase
 
 
 class ChannelRegistrationTestCase(BaseTestCase):
-
-    def create_channel(self):
-        return self.post_json('/channel/register', {
-            'name': 'test-channel',
-            'slug': 'test-channel',
-            'url': 'http://test-channel-servrer.opid.io/test-channel',
-            'password': 'test123'
-        })
-
     def test_register_no_data(self):
         """
         Test whether the request is denied when supplied no json body
