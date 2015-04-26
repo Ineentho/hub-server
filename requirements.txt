@@ -1,9 +1,17 @@
+# Main web framework
 flask
-authomatic
+
+# Database & PostgreSQL
 Flask-SQLAlchemy
+psycopg2
+
+# Authentication (for Google+) and scrypt for password hashing (between server API)
+authomatic
 scrypt
+
+# Testing framework (nose), Flask-Testing for improved flask testing,
+# coverage for code coverage and coveralls to upload the result to Coveralls
+nose
+Flask-Testing
 coverage
 coveralls
-nose
-psycopg2
-Flask-Testing

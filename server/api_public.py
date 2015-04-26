@@ -12,6 +12,9 @@ from server.channel import Video, Channel
 @app.route('/api/channels/')
 @app.route('/api/channels/<int:page>')
 def list_channels(page=1):
+    """
+    A paginated listing of all channels
+    """
     pagination = Channel.query.paginate(page, error_out=False)
 
     # Base response will always be used as the base, even if
@@ -37,6 +40,9 @@ def list_channels(page=1):
 @app.route('/api/videos/')
 @app.route('/api/videos/<int:page>')
 def list_videos(page=1):
+    """
+    A paginated listing of all videos
+    """
     pagination = Video.query.paginate(page, error_out=False)
 
     # Base response will always be used as the base, even if
