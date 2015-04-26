@@ -12,3 +12,9 @@ test:
   post:
     - cp nosetests.xml $CIRCLE_TEST_REPORTS
     - docker-compose run main bash -c "COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls"
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - $DEPLOY
