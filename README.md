@@ -13,13 +13,15 @@ The hub server aggregates multiple channel servers and provides an API for clien
 (such as the Android client) to list all channels from one place. The hub server
 is also the one responsible for handling user data.
 
-## A note on docker
+## A note on Docker
 
-Using docker is completely optional, using a virtualenv should
+Using Docker is completely optional, using a virtualenv should
 work just as good, though docker is very convenient. If you
 decide not to use Docker, you can use the `Dockerfile` and
 `docker-compose.yml` as detailed step-by-step guides on how
 to start the server or tests.
+
+More information about Docker can be found [/opidio/opidio](https://github.com/opidio/opidio#installing-docker-and-docker-compose)
 
 ## Commands
 
