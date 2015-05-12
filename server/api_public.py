@@ -13,6 +13,7 @@ from server.channel import Video, Channel
 @app.route('/api/channels/<int:page>')
 def list_channels(page=1):
     """
+
     A paginated listing of all channels
     """
     pagination = Channel.query.paginate(page, error_out=False)
@@ -62,6 +63,7 @@ def list_videos(page=1):
             'video': video.name,
             'slug': video.slug,
             'channel-id': video.channel_id,
-            'channel-name': video.channel.name
+            'channel-name': video.channel.name,
+            'url': video.channel.url + ('/' if video.channel.url[-1] != '/' else '') + video.slug
         })
     return jsonify(dict(base_resp, videos=video_list))
