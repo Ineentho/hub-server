@@ -1,8 +1,8 @@
 import os
 import server
 
-env_flask_env = os.environ.get('FLASK_ENV', 'development') == 'development'
-env_conn_string = os.environ.get('DATABASE_CONNECTION_STRING', 'postgresql://postgres@db:5432/')
+env_flask_env = os.environ.get('FLASK_ENV') or 'development'
+env_conn_string = os.environ.get('DATABASE_CONNECTION_STRING') or 'postgresql://postgres@db:5432/'
 
 
 server.create_app({

@@ -6,7 +6,7 @@ Flask-SQLAlchemy
 psycopg2
 
 # Authentication (for Google+) and scrypt for password hashing (between server API)
-authomatic
+requests
 scrypt
 
 # Testing framework (nose), Flask-Testing for improved flask testing,

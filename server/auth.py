@@ -1,37 +1,30 @@
-import os
+from flask import request, jsonify
+import httplib2
+from oauth2client import client
 from server import app
-from authomatic import Authomatic
-from authomatic.adapters import WerkzeugAdapter
-from authomatic.providers import oauth2
-from flask import Flask, request, make_response, jsonify
+import requests
 
 
-CONFIG = {
-    'google': {
-        'class_': oauth2.Google,
-        'consumer_key': os.environ.get('GOOGLE_CONSUMER_KEY'),
-        'consumer_secret': os.environ.get('GOOGLE_CONSUMER_SECRET'),
-        'scope': oauth2.Google.user_info_scope,
-        },
-    }
+def get_user(access_token):
+    resp = requests.get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + access_token)
+    json = resp.json()
+    return json['user_id']
 
-authomatic = Authomatic(CONFIG, 'is this needed?')
 
-@app.route('/login/<provider>', methods=['GET', 'POST'])
-def login(provider):
-    response = make_response()
-    result = authomatic.login(WerkzeugAdapter(request, response), provider)
+def get_name(access_token):
+    resp = requests.get('https://www.googleapis.com/oauth2/v2/userinfo', headers={
+        'Authorization': 'Bearer ' + access_token
+    })
+    return resp.json()['name']
 
-    if result:
-        if result.user:
-            # Logged in
-            return jsonify({
-                'success': True,
-                'name': result.user.name
-            })
 
-        return jsonify({
-            'success': False,
-            result: result
-        })
-    return response
+@app.route('/auth', methods=['POST'])
+def login():
+    params = request.get_json()
+    access_token = params['access_token']
+    name = get_name(access_token)
+
+    return jsonify({
+        'success': True,
+        'name': name
+    })
