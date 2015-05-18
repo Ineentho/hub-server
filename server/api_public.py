@@ -7,6 +7,7 @@ videos
 from flask import jsonify
 from server import app, db
 from server.channel import Video, Channel
+from server.user import User
 
 
 @app.route('/api/channels/')
@@ -67,3 +68,31 @@ def list_videos(page=1):
             'url': video.channel.url + ('/' if video.channel.url[-1] != '/' else '') + video.slug
         })
     return jsonify(dict(base_resp, videos=video_list))
+
+
+@app.route('/api/users/<string:query>/')
+@app.route('/api/users/<string:query>/<int:page>')
+def list_users(query, page=1):
+    """
+    A paginated search for users by name
+    """
+    pagination = User.query.filter(User.name.ilike("%" + query + "%")).paginate(page, error_out=False)
+
+    # Base response will always be used as the base, even if
+    # the request fails
+    base_resp = {
+        'page': page,
+        'total-pages': pagination.pages,
+        'total-users': pagination.total
+    }
+
+    if len(pagination.items) == 0 and page != 1:
+        return jsonify(dict(base_resp, error='Page not found')), 404
+
+    user_list = []
+    for user in pagination.items:
+        user_list.append({
+            'id': user.id,
+            'name': user.name
+        })
+    return jsonify(dict(base_resp, users=user_list))

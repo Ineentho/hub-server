@@ -62,3 +62,20 @@ class VideoListingTestCase(BaseTestCase):
         response = self.client.get('/api/videos/')
         self.assertEquals(response.json['total-videos'], 1)
         self.assertEquals(len(response.json['videos']), 1)
+
+
+class UserSearchTestCase(BaseTestCase):
+    def test_no_users(self):
+        """
+        When searching for anything with no users, there should be 0 results
+        """
+
+        resp = self.client.get('/api/users/Test Search/')
+        self.assertEquals(resp.json['total-users'], 0)
+
+    def test_correct_user(self):
+        """
+        When there is a user that matches, there should be 1 result
+        """
+
+        #self.create_dummy_user()
