@@ -1,13 +1,12 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 from server import db
 
 
 following_association = db.Table('following_association', db.Model.metadata,
-                                       db.Column('following', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-                                       db.Column('followed', db.Integer, db.ForeignKey('users.id'), primary_key=True)
-                                       )
+                                 db.Column('following', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+                                 db.Column('followed', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+                                 )
 
 
 class User(db.Model):
