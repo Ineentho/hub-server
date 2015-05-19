@@ -35,6 +35,7 @@ def load_db():
     # Register all APIs
     import server.auth
     import server.api_public
+    import server.api_users
     import server.api_channel
 
     db.create_all()
