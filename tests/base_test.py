@@ -37,7 +37,13 @@ class BaseTestCase(TestCase):
             'video-name': video_name
         })
 
-
     def post_json(self, url, data):
         return self.client.post(url, data=json.dumps(data),
-                             headers={'content-type': 'application/json'})
+                                headers={'content-type': 'application/json'})
+
+    def create_user(self, name, userid):
+        token = 'test_' + name + '_' + str(userid)
+        self.client.post('/auth',
+                         data=json.dumps({'access_token': token}),
+                         content_type='application/json')
+        return token

@@ -1,3 +1,4 @@
+from flask import json
 from base_test import BaseTestCase
 
 
@@ -75,7 +76,12 @@ class UserSearchTestCase(BaseTestCase):
 
     def test_correct_user(self):
         """
-        When there is a user that matches, there should be 1 result
+        When there are two users that matches, there should be 2 results
         """
 
-        #self.create_dummy_user()
+        self.create_user('Henrik', 1)
+        self.create_user('Henrik2', 2)
+        self.create_user('Test', 3)
+
+        resp = self.client.get('/api/users/Henrik/')
+        self.assertEquals(resp.json['total-users'], 2)

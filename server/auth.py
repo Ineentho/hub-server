@@ -18,11 +18,22 @@ def get_name(access_token):
 
 
 def get_or_create(access_token):
-    google_id = get_user_id(access_token)
+    if app.config['TESTING']:
+        # Create a test user
+        # The access_token is in the format test_username_id
+        split = access_token.split('_')
+        testing_name = split[1]
+        google_id = split[2]
+    else:
+        # Create a normal Google user
+        google_id = get_user_id(access_token)
     user = User.query.filter_by(google_id=google_id).first()
     if not user:
-        print('Created new user')
-        user = User(get_name(access_token), google_id)
+        if app.config['TESTING']:
+            name = testing_name
+        else:
+            name = get_name(access_token)
+        user = User(name, google_id)
         db.session.add(user)
         db.session.commit()
 
