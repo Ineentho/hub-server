@@ -14,7 +14,6 @@ from server.user import User
 @app.route('/api/channels/<int:page>')
 def list_channels(page=1):
     """
-
     A paginated listing of all channels
     """
     pagination = Channel.query.paginate(page, error_out=False)
