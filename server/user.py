@@ -1,5 +1,3 @@
-from sqlalchemy.orm import relationship
-
 from server import db
 
 
@@ -14,11 +12,11 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     google_id = db.Column(db.String(30), unique=True, index=True)
     name = db.Column(db.String(80))
-    following = relationship('User',
-                             secondary=following_association,
-                             primaryjoin=(id == following_association.c.following),
-                             secondaryjoin=(id == following_association.c.followed),
-                             backref='followers')
+    following = db.relationship('User',
+                                secondary=following_association,
+                                primaryjoin=(id == following_association.c.following),
+                                secondaryjoin=(id == following_association.c.followed),
+                                backref=db.backref('followers'))
 
     def __init__(self, name, google_id):
         self.name = name
