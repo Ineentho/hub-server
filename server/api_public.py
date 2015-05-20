@@ -55,7 +55,7 @@ def list_videos(page=1):
         'total-videos': pagination.total
     }
 
-    if len(pagination.items) == 0:
+    if len(pagination.items) == 0 and page != 1:
         return jsonify(dict(base_resp, error='Page not found')), 404
 
     video_list = []
