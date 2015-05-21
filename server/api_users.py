@@ -19,6 +19,22 @@ def follow():
         'success': True
     })
 
+@app.route('/api/unfollow', methods=['POST'])
+def unfollow():
+    params = request.get_json()
+    access_token = params['access_token']
+    user_to_unfollow = params['user_to_unfollow']
+    user = get_or_create(access_token)
+    to_unfollow = User.query.filter(User.id == user_to_unfollow).one()
+    user.following.remove(to_unfollow)
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({
+        'success': True
+    })
+
+
 
 def simple_user_list(followers, page):
     base_resp = {
