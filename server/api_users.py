@@ -81,19 +81,39 @@ def toggle_like(video_id):
     Likes an video. If the the user already likes the video, it reverses the action.
     """
     user = get_or_create(request.headers['access_token'])
-    video = Video.query.filter_by(id=video_id)
+    video = Video.query.filter_by(id=video_id).first()
 
-    user.liked_videos.append(video)
+    i_am_liking = False
+
+    for like in video.liking_users:
+        if like.id == user.id:
+            i_am_liking = True
+            break
+
+
+    if i_am_liking:
+        user.liked_videos.remove(video)
+    else:
+        user.liked_videos.append(video)
     db.session.commit()
 
     return jsonify({
-        'success': True
+        "liking": not i_am_liking
     })
 
 @app.route('/api/likes/<int:video_id>')
 def likes(video_id):
     video = Video.query.filter_by(id=video_id).first()
+    user = get_or_create(request.headers['access_token'])
+
+    i_am_liking = False
+
+    for like in video.liking_users:
+        if like.id == user.id:
+            i_am_liking = True
+            break
 
     return jsonify({
-        'likes': len(video.liking_users)
+        'likes': len(video.liking_users),
+        'i-am-liking': i_am_liking
     })
