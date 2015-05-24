@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from server import app, db
 from server.auth import get_or_create
+from server.channel import Video
 from server.user import User
 
 
@@ -73,3 +74,26 @@ def following(page):
     """
     user = get_or_create(request.headers['access_token'])
     return simple_user_list(user.following, page)
+
+@app.route('/api/toggle-like/<int:video_id>')
+def toggle_like(video_id):
+    """
+    Likes an video. If the the user already likes the video, it reverses the action.
+    """
+    user = get_or_create(request.headers['access_token'])
+    video = Video.query.filter_by(id=video_id)
+
+    user.liked_videos.append(video)
+    db.session.commit()
+
+    return jsonify({
+        'success': True
+    })
+
+@app.route('/api/likes/<int:video_id>')
+def likes(video_id):
+    video = Video.query.filter_by(id=video_id).first()
+
+    return jsonify({
+        'likes': len(video.liking_users)
+    })
