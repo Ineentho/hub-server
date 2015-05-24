@@ -28,12 +28,12 @@ class ChannelRegistrationTestCase(BaseTestCase):
         """
 
         # Too long name
-        rv = self.post_json('/channel/register', {'name': 'abc'*50, 'slug': 'a', 'url': 'a', 'password': 'a'})
+        rv = self.post_json('/channel/register', {'name': 'abc'*50, 'slug': 'a', 'url': 'a', 'password': 'a', 'hosted-by': 'a'})
         self.assertIn(b'may not be longer than', rv.data)
         self.assertEqual(rv.status_code, 400)
 
         # No name parameter
-        rv = self.post_json('/channel/register', {'slug': 'a', 'url': 'a', 'password': 'a'})
+        rv = self.post_json('/channel/register', {'slug': 'a', 'url': 'a', 'password': 'a', 'hosted-by': 'a'})
         self.assertIn(b'name is required', rv.data)
         self.assertEqual(rv.status_code, 400)
 
@@ -43,17 +43,17 @@ class ChannelRegistrationTestCase(BaseTestCase):
         """
 
         # No slug parameter
-        rv = self.post_json('/channel/register', {'name': 'a', 'url': 'a', 'password': 'a'})
+        rv = self.post_json('/channel/register', {'name': 'a', 'url': 'a', 'password': 'a', 'hosted-by': 'a'})
         self.assertIn(b'slug is required', rv.data)
         self.assertEqual(rv.status_code, 400)
 
         # Slug with invalid characters
-        rv = self.post_json('/channel/register', {'slug': 'C', 'name': 'a', 'url': 'a', 'password': 'a'})
+        rv = self.post_json('/channel/register', {'slug': 'C', 'name': 'a', 'url': 'a', 'password': 'a', 'hosted-by': 'a'})
         self.assertIn(b'slug may only contain', rv.data)
         self.assertEqual(rv.status_code, 400)
 
         # Too long slug
-        rv = self.post_json('/channel/register', {'slug': 'a' * 100, 'name': 'a', 'url': 'a', 'password': 'a'})
+        rv = self.post_json('/channel/register', {'slug': 'a' * 100, 'name': 'a', 'url': 'a', 'password': 'a', 'hosted-by': 'a'})
         self.assertIn(b'slug may not be longer than', rv.data)
         self.assertEqual(rv.status_code, 400)
 
@@ -63,12 +63,12 @@ class ChannelRegistrationTestCase(BaseTestCase):
         """
 
         # No url parameter
-        rv = self.post_json('/channel/register', {'name': 'a', 'slug': 'a', 'password': 'a'})
+        rv = self.post_json('/channel/register', {'name': 'a', 'slug': 'a', 'password': 'a', 'hosted-by': 'a'})
         self.assertIn(b'url is required', rv.data)
         self.assertEqual(rv.status_code, 400)
 
         # Too long url
-        rv = self.post_json('/channel/register', {'url': 'a' * 300, 'name': 'a', 'slug': 'a', 'password': 'a'})
+        rv = self.post_json('/channel/register', {'url': 'a' * 300, 'name': 'a', 'slug': 'a', 'password': 'a', 'hosted-by': 'a'})
         self.assertIn(b'url may not be longer than', rv.data)
         self.assertEqual(rv.status_code, 400)
 
@@ -78,7 +78,7 @@ class ChannelRegistrationTestCase(BaseTestCase):
         """
 
         # No password parameter
-        rv = self.post_json('/channel/register', {'name': 'a', 'slug': 'a', 'url': 'a'})
+        rv = self.post_json('/channel/register', {'name': 'a', 'slug': 'a', 'url': 'a', 'hosted-by': 'a'})
         self.assertIn(b'password is required', rv.data)
         self.assertEqual(rv.status_code, 400)
 
@@ -96,7 +96,8 @@ class ChannelRegistrationTestCase(BaseTestCase):
             'name': 'test-channel',
             'slug': 'test-channel',
             'url': 'http://test-channel-servrer.opid.io/test-channel',
-            'password': 'test123'
+            'password': 'test123',
+            'hosted-by': 'hosted-by'
         })
         self.assertIn(b'Channel created', rv.data)
         self.assertEqual(rv.status_code, 200)

@@ -21,12 +21,13 @@ class BaseTestCase(TestCase):
 
     # Utils used across all tests
 
-    def create_channel(self, slug='test-channel', password='test123'):
+    def create_channel(self, slug='test-channel', password='test123', hosted_by='undefined'):
         return self.post_json('/channel/register', {
             'name': 'test-channel',
             'slug': slug,
             'url': 'http://test-channel-servrer.opid.io/test-channel',
-            'password': password
+            'password': password,
+            'hosted-by': hosted_by
         })
 
     def create_video(self, slug='test-channel', password='test123', video_slug='video-slug', video_name='video_name'):
