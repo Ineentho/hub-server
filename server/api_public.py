@@ -38,6 +38,17 @@ def list_channels(page=1):
         })
     return jsonify(dict(base_resp, channels=channel_list))
 
+@app.route('/api/channel/<int:id>')
+def channel_by_url(id):
+    ch = Channel.query.filter_by(id=id).first()
+
+    return jsonify({
+        'channel': ch.name,
+        'slug': ch.slug,
+        'url': ch.url,
+        'hosted-by': ch.hosted_by
+    })
+
 @app.route('/api/videos/')
 @app.route('/api/videos/<int:page>')
 def list_videos(page=1):

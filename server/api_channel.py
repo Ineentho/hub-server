@@ -84,6 +84,12 @@ def register_channel():
     if not params:
         return invalid_request('The request body is not valid JSON')
 
+    # Hosted By: The name of the hoster
+    if 'hosted-by' not in params:
+        return invalid_parameter('hosted-by', 'Hosted by is required')
+    if len(params['hosted-by']) > 80:
+        return invalid_parameter('hosted-by', 'Hosted by is too long (max 80 chars)')
+
     # name: The channel name, required. Can contain any letters.
     if 'name' not in params:
         return invalid_parameter('name', 'A channel name is required')
@@ -115,7 +121,7 @@ def register_channel():
         return invalid_parameter('password', 'A password is required')
 
     try:
-        create_channel(params['name'], params['slug'], params['url'], params['password'])
+        create_channel(params['name'], params['slug'], params['url'], params['password'], params['hosted-by'])
     except ChannelExistsError:
         return invalid_parameter('slug', 'The slug is already in use')
 

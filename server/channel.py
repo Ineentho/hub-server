@@ -31,8 +31,8 @@ def authenticate_channel(slug, password):
     return channel
 
 
-def create_channel(name, slug, url, password):
-    channel = Channel(name, slug, url, password)
+def create_channel(name, slug, url, password, hosted_by):
+    channel = Channel(name, slug, url, password, hosted_by)
 
     db.session.add(channel)
 
@@ -60,15 +60,17 @@ class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     slug = db.Column(db.String(80), unique=True)
+    hosted_by = db.Column(db.String(80))
     url = db.Column(db.String(256))
     password = db.Column(db.LargeBinary(256), unique=True)
     videos = db.relationship('Video', backref='channel')
 
-    def __init__(self, name, slug, url, password):
+    def __init__(self, name, slug, url, password, hosted_by):
         self.name = name
         self.password = hash_password(password)
         self.url = url
         self.slug = slug
+        self.hosted_by = hosted_by
 
 
 class Video(db.Model):
