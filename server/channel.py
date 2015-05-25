@@ -79,7 +79,7 @@ class Video(db.Model):
     name = db.Column(db.String(80))
     slug = db.Column(db.String(80))
     channel_id = db.Column(db.Integer, db.ForeignKey('channels.id'))
-    comments = db.relationship('Comment', backref='video')
+    comments = db.relationship('Comment', backref='videos')
 
 
     __table_args__ = (db.UniqueConstraint('slug', 'channel_id', name='_video_slug_uc'),)
@@ -91,7 +91,7 @@ class Video(db.Model):
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
-    comment = db.String(1024)
+    comment = db.Column(db.String(1024))
     video_id = db.Column(db.Integer, db.ForeignKey('videos.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 

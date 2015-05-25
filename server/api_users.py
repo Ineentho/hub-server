@@ -137,3 +137,28 @@ def likes(video_id):
         'likes': len(video.liking_users),
         'i-am-liking': i_am_liking
     })
+
+@app.route('/api/comments/<int:video_id>/')
+@app.route('/api/comments/<int:video_id>/<int:page>')
+def comments(video_id, page=1):
+    """
+    List of comments, using fake pagination for now
+    """
+    video = Video.query.filter_by(id=video_id).first()
+
+    base_resp = {
+        'page': page,
+        'total-pages': 1,
+        'total-comments': len(video.comments)
+    }
+
+    if page != 1:
+        return jsonify(dict(base_resp, error='Page not found')), 404
+
+    comment_list = []
+    for comment in video.comments:
+        comment_list.append({
+            'user': comment.user.name,
+            'comment': comment.comment
+        })
+    return jsonify(dict(base_resp, comments=comment_list))
