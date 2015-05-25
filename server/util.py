@@ -38,6 +38,10 @@ def verify_password(hashed_password, guessed_password):
         return False
 
 
+def get_video_url(video):
+    return video.channel.url + ('/' if video.channel.url[-1] != '/' else '') + video.slug
+
+
 class UnbufferedStream(object):
     def __init__(self, stream):
         self.stream = stream

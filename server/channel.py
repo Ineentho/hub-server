@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy.exc import IntegrityError
 from server import db
 from server.util import hash_password, verify_password
@@ -93,11 +94,13 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(1024))
     video_id = db.Column(db.Integer, db.ForeignKey('videos.id'))
+    video = db.relationship('Video')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, comment, user):
+    def __init__(self, comment, user, video):
         self.comment = comment
         self.user_id = user.id
+        self.video_id = video.id
 
 
 class FeedItem(db.Model):
@@ -109,14 +112,18 @@ class FeedItem(db.Model):
     like = db.relationship('Video')
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
     comment = db.relationship('Comment')
+    date = db.Column(db.DateTime)
 
     def __init__(self, user, event_type, item):
         self.event_type = event_type
         self.user_id = user.id
+        self.date = datetime.datetime\
+            .now()
 
         if event_type == 0:
             # Like
             self.like_id = item.id
         elif event_type == 1:
             # Comment
+            print(item.id)
             self.comment_id = item.id

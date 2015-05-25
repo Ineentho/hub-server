@@ -8,6 +8,7 @@ from flask import jsonify
 from server import app, db
 from server.channel import Video, Channel
 from server.user import User
+from server.util import get_video_url
 
 
 @app.route('/api/channels/')
@@ -49,6 +50,7 @@ def channel_by_url(id):
         'hosted-by': ch.hosted_by
     })
 
+
 @app.route('/api/videos/')
 @app.route('/api/videos/<int:page>')
 def list_videos(page=1):
@@ -75,7 +77,7 @@ def list_videos(page=1):
             'slug': video.slug,
             'channel-id': video.channel_id,
             'channel-name': video.channel.name,
-            'url': video.channel.url + ('/' if video.channel.url[-1] != '/' else '') + video.slug,
+            'url': get_video_url(video),
             'video-id': video.id
         })
     return jsonify(dict(base_resp, videos=video_list))

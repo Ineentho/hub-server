@@ -1,8 +1,10 @@
+import datetime
 from flask import request, jsonify
 from server import app, db
 from server.auth import get_or_create
 from server.channel import Video, Comment, FeedItem
 from server.user import User
+from server.util import get_video_url
 
 
 @app.route('/api/follow', methods=['POST'])
@@ -44,11 +46,12 @@ def comment():
     user = get_or_create(access_token)
     video = Video.query.filter_by(id=video_id).first()
 
-    db_comment = Comment(message, user)
+    db_comment = Comment(message, user, video)
     video.comments.append(db_comment)
     db.session.add(db_comment)
     db.session.add(user)
     db.session.add(video)
+    db.session.commit()  # Needed in order to create an ID for the comment
     create_feed_comment(user, db_comment)
     db.session.commit()
 
@@ -181,3 +184,58 @@ def comments(video_id, page=1):
             'comment': comment.comment
         })
     return jsonify(dict(base_resp, comments=comment_list))
+
+
+def create_video_obj(video):
+    return {
+        'channel-id': video.channel_id,
+        'channel-name': video.channel.name,
+        'slug': video.slug,
+        'url': get_video_url(video),
+        'video': video.name,
+        'id': video.id
+    }
+
+
+@app.route('/api/feed')
+@app.route('/api/feed/<int:page>')
+def get_feed(page=1):
+    """
+    Get all news items in the feed.
+    Pagination to come
+    """
+    user = get_or_create(request.headers['access_token'])
+    feed = FeedItem.query.filter(User.following.any(id=user.id)).order_by(FeedItem.date.desc()).all()
+
+    base_resp = {
+        'page': page,
+        'total-pages': 1,
+        'total-items': len(feed)
+    }
+
+    # Fake pagination, there's only 1 page
+    if page != 1:
+        return jsonify(dict(base_resp, error='Page not found')), 404
+
+    feed_item_list = []
+    for feed_item in feed:
+        if feed_item.event_type == 0:
+            # It's a like
+            feed_item_list.append({
+                'type': 'like',
+                'date': feed_item.date.isoformat('T'),
+                'videoInf': create_video_obj(feed_item.like)
+            })
+        elif feed_item.event_type == 1:
+            # It's a comment
+            feed_item_list.append({
+                'type': 'comment',
+                'date': feed_item.date.isoformat('T'),
+                'comment': {
+                    'text': feed_item.comment.comment,
+                    'videoInf': create_video_obj(feed_item.comment.video)
+                }
+            })
+
+    return jsonify(dict(base_resp, items=feed_item_list))
+
