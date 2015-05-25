@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from server import app, db
 from server.auth import get_or_create
-from server.channel import Video
+from server.channel import Video, Comment
 from server.user import User
 
 
@@ -29,6 +29,26 @@ def unfollow():
     to_unfollow = User.query.filter(User.id == user_to_unfollow).one()
     user.following.remove(to_unfollow)
     db.session.add(user)
+    db.session.commit()
+
+    return jsonify({
+        'success': True
+    })
+
+@app.route('/api/comment', methods=['POST'])
+def comment():
+    params = request.get_json()
+    access_token = params['access_token']
+    message = params['message']
+    video_id = params['video']
+    user = get_or_create(access_token)
+    video = Video.query.filter_by(id=video_id).first()
+
+    db_comment = Comment(message, user)
+    video.comments.append(db_comment)
+    db.session.add(db_comment)
+    db.session.add(user)
+    db.session.add(video)
     db.session.commit()
 
     return jsonify({

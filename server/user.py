@@ -26,6 +26,8 @@ class User(db.Model):
                                    secondary=liking_association,
                                    backref=db.backref('liking_users'))
 
+    comments = db.relationship('Comment', backref='user')
+
     def __init__(self, name, google_id):
         self.name = name
         self.google_id = google_id
