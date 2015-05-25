@@ -223,14 +223,16 @@ def get_feed(page=1):
             # It's a like
             feed_item_list.append({
                 'type': 'like',
-                'date': feed_item.date.isoformat('T'),
+                'username': feed_item.user.name,
+                'date': feed_item.date.replace(microsecond=0).isoformat('T'),
                 'videoInf': create_video_obj(feed_item.like)
             })
         elif feed_item.event_type == 1:
             # It's a comment
             feed_item_list.append({
                 'type': 'comment',
-                'date': feed_item.date.isoformat('T'),
+                'username': feed_item.user.name,
+                'date': feed_item.date.replace(microsecond=0).isoformat('T'),
                 'comment': {
                     'text': feed_item.comment.comment,
                     'videoInf': create_video_obj(feed_item.comment.video)
