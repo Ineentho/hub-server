@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from server import app, db
 from server.auth import get_or_create
-from server.channel import Video, Comment
+from server.channel import Video, Comment, FeedItem
 from server.user import User
 
 
@@ -49,12 +49,30 @@ def comment():
     db.session.add(db_comment)
     db.session.add(user)
     db.session.add(video)
+    create_feed_comment(user, db_comment)
     db.session.commit()
 
     return jsonify({
         'success': True
     })
 
+
+def create_feed_like(user, video):
+    """
+    Adds an item to the users feed
+    Does not commit the item to the database
+    """
+    feed_item = FeedItem(user, 0, video)
+    db.session.add(feed_item)
+
+
+def create_feed_comment(user, comment):
+    """
+    Adds an item to the users feed
+    Does not commit the item to the database
+    """
+    feed_item = FeedItem(user, 1, comment)
+    db.session.add(feed_item)
 
 
 def simple_user_list(followers, page):
@@ -115,6 +133,7 @@ def toggle_like(video_id):
         user.liked_videos.remove(video)
     else:
         user.liked_videos.append(video)
+        create_feed_like(user, video)
     db.session.commit()
 
     return jsonify({

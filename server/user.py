@@ -27,6 +27,7 @@ class User(db.Model):
                                    backref=db.backref('liking_users'))
 
     comments = db.relationship('Comment', backref='user')
+    feed_items = db.relationship('FeedItem', backref='user')
 
     def __init__(self, name, google_id):
         self.name = name

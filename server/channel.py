@@ -81,12 +81,12 @@ class Video(db.Model):
     channel_id = db.Column(db.Integer, db.ForeignKey('channels.id'))
     comments = db.relationship('Comment', backref='videos')
 
-
     __table_args__ = (db.UniqueConstraint('slug', 'channel_id', name='_video_slug_uc'),)
 
     def __init__(self, slug, name):
         self.name = name
         self.slug = slug
+
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -98,3 +98,25 @@ class Comment(db.Model):
     def __init__(self, comment, user):
         self.comment = comment
         self.user_id = user.id
+
+
+class FeedItem(db.Model):
+    __tablename__ = 'feed'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))  # Backref'd as user
+    event_type = db.Column(db.Integer)  # See init function
+    like_id = db.Column(db.Integer, db.ForeignKey('videos.id'))
+    like = db.relationship('Video')
+    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
+    comment = db.relationship('Comment')
+
+    def __init__(self, user, event_type, item):
+        self.event_type = event_type
+        self.user_id = user.id
+
+        if event_type == 0:
+            # Like
+            self.like_id = item.id
+        elif event_type == 1:
+            # Comment
+            self.comment_id = item.id
