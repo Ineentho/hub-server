@@ -27,7 +27,7 @@ def list_channels(page=1):
         'total-channels': pagination.total
     }
 
-    if len(pagination.items) == 0:
+    if len(pagination.items) == 0 and page != 1:
         return jsonify(dict(base_resp, error='Page not found')), 404
 
     channel_list = []

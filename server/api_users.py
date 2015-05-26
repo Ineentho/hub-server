@@ -99,7 +99,7 @@ def simple_user_list(followers, page):
 
 @app.route('/api/my-followers/')
 @app.route('/api/my-followers/<int:page>')
-def my_followers(page):
+def my_followers(page=1):
     """
     Currently using fake pagination
     """
@@ -205,20 +205,22 @@ def get_feed(page=1):
     Pagination to come
     """
     user = get_or_create(request.headers['access_token'])
-    feed = FeedItem.query.filter(User.following.any(id=user.id)).order_by(FeedItem.date.desc()).all()
+    pagination = FeedItem.query\
+        .filter(User.following.any(id=user.id))\
+        .order_by(FeedItem.date.desc())\
+        .paginate(page, error_out=False)
 
     base_resp = {
         'page': page,
-        'total-pages': 1,
-        'total-items': len(feed)
+        'total-pages': pagination.pages,
+        'total-items': pagination.total
     }
 
-    # Fake pagination, there's only 1 page
-    if page != 1:
+    if len(pagination.items) == 0 and page != 1:
         return jsonify(dict(base_resp, error='Page not found')), 404
 
     feed_item_list = []
-    for feed_item in feed:
+    for feed_item in pagination.items:
         if feed_item.event_type == 0:
             # It's a like
             feed_item_list.append({
