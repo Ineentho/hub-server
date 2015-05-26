@@ -44,3 +44,5 @@ class FeedTestCase(BaseTestCase):
         """
         Make sure that follow actions end up in the feed
         """
+    def test_empty(self):
+        pass
